@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Praat WebAssembly</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f5f5f5;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    #output {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #f9f9f9;
+      border-left: 4px solid #4CAF50;
+      white-space: pre-wrap;
+      font-family: monospace;
+      font-size: 14px;
+    }
+    .status {
+      margin: 10px 0;
+      padding: 10px;
+      border-radius: 4px;
+    }
+    .loading { color: #666; font-style: italic; }
+    .success { color: #4CAF50; }
+    .error { color: #f44336; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎵 Praat WebAssembly Module</h1>
+    <div id="status" class="loading">Loading...</div>
+    <div id="output"></div>
+  </div>
+
+  <script>
+    var statusElement = document.getElementById('status');
+    var outputElement = document.getElementById('output');
+
+    statusElement.textContent = 'Loading WebAssembly module...';
+
+    PraatWasm().then(function(Module) {
+      statusElement.textContent = '✓ WebAssembly module loaded successfully';
+      statusElement.className = 'success';
+
+      // 初始化 Praat
+      try {
+        Module.init_praat();
+        outputElement.textContent = 'Praat initialized!\n';
+        outputElement.textContent += 'Available functions:\n';
+        outputElement.textContent += '  - init_praat()\n';
+        outputElement.textContent += '  - load_sound(filePath)\n';
+        outputElement.textContent += '  - get_sound_samples(filePath, buffer, numSamples)\n';
+      } catch (error) {
+        statusElement.textContent = '✗ Initialization error: ' + error;
+        statusElement.className = 'error';
+      }
+
+    }).catch(function(error) {
+      statusElement.textContent = '✗ Failed to load WebAssembly: ' + error;
+      statusElement.className = 'error';
+    });
+  </script>
+  {{{ SCRIPT }}}
+</body>
+</html>
