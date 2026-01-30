@@ -5,6 +5,7 @@ on:
     branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
+  workflow_dispatch:
 
 jobs:
   build-wasm:
@@ -46,4 +47,4 @@ jobs:
       run: |
         cd cpp_wasm_yd/build
         # Check if the main files were generated
-        ls -la *.js *.wasm *.html
+        ls -la *.js *.wasm *.html 
