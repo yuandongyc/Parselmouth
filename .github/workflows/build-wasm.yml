@@ -1,0 +1,49 @@
+name: Build WASM
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build-wasm:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Emscripten
+      uses: mymindstorm/setup-emsdk@v12
+      with:
+        emsdk-version: '3.1.51'
+        # Use latest stable version of Emscripten
+        
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake ninja-build
+        
+    - name: Build cpp_wasm_yd
+      run: |
+        cd cpp_wasm_yd
+        mkdir build
+        cd build
+        emcmake cmake .. -DCMAKE_BUILD_TYPE=Release
+        emmake make -j$(nproc)
+        
+    - name: Upload WASM artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: praat-wasm-artifacts
+        path: |
+          cpp_wasm_yd/build/*.js
+          cpp_wasm_yd/build/*.wasm
+          cpp_wasm_yd/build/*.html
+          
+    - name: Test WASM output
+      run: |
+        cd cpp_wasm_yd/build
+        # Check if the main files were generated
+        ls -la *.js *.wasm *.html
