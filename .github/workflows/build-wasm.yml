@@ -41,12 +41,12 @@ jobs:
       with:
         name: praat-wasm-artifacts
         path: |
-          cpp_wasm_yd/build/*.js
-          cpp_wasm_yd/build/*.wasm
-          cpp_wasm_yd/build/*.html
-          
+          cpp_wasm_yd/build/src/*.js
+          cpp_wasm_yd/build/src/*.wasm
+          cpp_wasm_yd/build/src/*.html
+
     - name: Test WASM output
       run: |
-        cd cpp_wasm_yd/build
+        cd cpp_wasm_yd/build/src
         # Check if the main files were generated
         ls -la *.js *.wasm *.html 
