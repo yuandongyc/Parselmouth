@@ -18,3 +18,5 @@ __pycache__/
 # OS X temporary and cache files
 *~
 .DS_Store
+
+/cpp_wasm_yd/build
