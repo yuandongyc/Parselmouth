@@ -2,14 +2,14 @@
 #include <emscripten.h>
 #include <cstring>
 #include <cmath>
-#include "fon/Sound.h"
-#include "fon/Spectrum.h"
-#include "fon/Spectrogram.h"
-#include "fon/Pitch.h"
-#include "fon/Sound_and_Spectrum.h"
-#include "fon/Sound_and_Spectrogram.h"
-#include "fon/Sound_to_Pitch.h"
-#include "melder/melder.h"
+#include "Sound.h"
+#include "Spectrum.h"
+#include "Spectrogram.h"
+#include "Pitch.h"
+#include "Sound_and_Spectrum.h"
+#include "Sound_and_Spectrogram.h"
+#include "Sound_to_Pitch.h"
+#include "melder.h"
 
 // EMSCRIPTEN_KEEPALIVE 防止函数被优化掉
 
@@ -28,8 +28,8 @@ void init_praat() {
 extern "C" EMSCRIPTEN_KEEPALIVE
 int load_sound_from_memory(float* samples, int numSamples, float sampleRate) {
     try {
-        // 创建新的 Sound 对象
-        autoSound sound = Sound_create(numSamples, 0.0, (double)numSamples / sampleRate, 1.0 / sampleRate, 1.0 / sampleRate);
+        // 创建新的 Sound 对象（单声道）
+        autoSound sound = Sound_create(1, 0.0, (double)numSamples / sampleRate, numSamples, 1.0 / sampleRate, 0.0);
 
         if (!sound) {
             std::cerr << "Failed to create Sound object" << std::endl;
@@ -41,9 +41,9 @@ int load_sound_from_memory(float* samples, int numSamples, float sampleRate) {
             sound->z[1][i] = samples[i - 1];
         }
 
-        // 保存到全局变量
-        g_autoSound = sound;
-        g_currentSound = sound.get();
+        // 保存到全局变量（使用移动语义）
+        g_autoSound = std::move(sound);
+        g_currentSound = g_autoSound.get();
 
         std::cout << "Sound loaded from memory: " << numSamples << " samples at " << sampleRate << " Hz" << std::endl;
         return 1;
