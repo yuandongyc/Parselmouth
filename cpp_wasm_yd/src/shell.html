@@ -54,14 +54,14 @@
       statusElement.textContent = '✓ WebAssembly module loaded successfully';
       statusElement.className = 'success';
 
-      // 初始化 Praat
+      // 初始化 Praat - 使用 _init_praat() 调用导出的 C 函数
       try {
-        Module.init_praat();
+        Module._init_praat();
         outputElement.textContent = 'Praat initialized!\n';
         outputElement.textContent += 'Available functions:\n';
-        outputElement.textContent += '  - init_praat()\n';
-        outputElement.textContent += '  - load_sound(filePath)\n';
-        outputElement.textContent += '  - get_sound_samples(filePath, buffer, numSamples)\n';
+        outputElement.textContent += '  - _init_praat()\n';
+        outputElement.textContent += '  - _load_sound(filePath)\n';
+        outputElement.textContent += '  - _get_sound_samples(filePath, buffer, numSamples)\n';
       } catch (error) {
         statusElement.textContent = '✗ Initialization error: ' + error;
         statusElement.className = 'error';
